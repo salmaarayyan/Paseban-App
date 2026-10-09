@@ -18,9 +18,6 @@ class KegiatanStatistik extends Model
         'nama',
         'jenis',
         'tahun',
-        'sumber',
-        'periode_kegiatan',
-        'judul_kegiatan',
     ];
 
     public function dinas(): BelongsTo

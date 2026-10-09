@@ -12,9 +12,11 @@ return new class extends Migration
             $table->id();
             $table->string('judul');
             $table->date('tanggal');
+            // Varchar (bukan enum) supaya admin bisa menambah kategori baru selain pendampingan/pembinaan.
+            $table->string('kategori');
+            $table->string('gambar')->nullable();
             $table->text('ringkasan')->nullable();
             $table->text('narasi')->nullable();
-            $table->string('gambar')->nullable();
             $table->timestamps();
         });
     }

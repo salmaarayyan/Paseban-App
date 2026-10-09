@@ -11,9 +11,10 @@ class KegiatanPendampingan extends Model
     protected $fillable = [
         'judul',
         'tanggal',
+        'kategori',
+        'gambar',
         'ringkasan',
         'narasi',
-        'gambar',
     ];
 
     protected function casts(): array

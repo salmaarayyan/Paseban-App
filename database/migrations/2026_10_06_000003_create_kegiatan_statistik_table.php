@@ -16,9 +16,6 @@ return new class extends Migration
             $table->string('nama');
             $table->enum('jenis', ['survei', 'pendataan_lengkap', 'kompromin']);
             $table->unsignedSmallInteger('tahun');
-            $table->string('sumber')->nullable();
-            $table->string('periode_kegiatan')->nullable();
-            $table->string('judul_kegiatan')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

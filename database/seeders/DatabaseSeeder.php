@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Data awal minimal: 1 dinas contoh, 1 akun Admin BPS, 1 akun Dinas.
-     * Password diambil dari SEED_DEFAULT_PASSWORD di .env (tidak di-hardcode).
+     * Data awal: daftar dinas, 1 akun Admin BPS, dan 1 akun untuk tiap dinas.
+     * Password seluruh akun diambil dari SEED_DEFAULT_PASSWORD di .env (tidak di-hardcode).
      */
     public function run(): void
     {
@@ -24,14 +24,7 @@ class DatabaseSeeder extends Seeder
             throw new RuntimeException('SEED_DEFAULT_PASSWORD belum diisi di file .env.');
         }
 
-        $dinkes = Dinas::updateOrCreate(
-            ['slug' => 'dinkes'],
-            [
-                'nama' => 'Dinas Kesehatan',
-                'singkatan' => 'Dinkes',
-                'instansi_code' => null,
-            ],
-        );
+        $this->call(DinasSeeder::class);
 
         User::updateOrCreate(
             ['email' => 'admin@bpsbantul.com'],
@@ -43,14 +36,20 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        User::updateOrCreate(
-            ['email' => 'dinkes@bpsbantul.com'],
-            [
-                'nama' => 'Dinas Kesehatan',
-                'password' => $password,
-                'role' => 'dinas',
-                'id_dinas' => $dinkes->id,
-            ],
-        );
+        // Bappeda hanya mengakses halaman publik, sehingga tidak dibuatkan akun.
+        $tanpaAkun = ['bappeda'];
+
+        foreach (Dinas::whereNotIn('slug', $tanpaAkun)->get() as $dinas) {
+            User::updateOrCreate(
+                ['email' => $dinas->slug.'@bpsbantul.com'],
+                [
+                    'nama' => $dinas->nama,
+                    'password' => $password,
+                    // Kominfo tetap terikat ke dinasnya, tetapi memakai tampilan pemeriksa Romantik/Metadata.
+                    'role' => $dinas->slug === 'diskominfo' ? 'kominfo' : 'dinas',
+                    'id_dinas' => $dinas->id,
+                ],
+            );
+        }
     }
 }
